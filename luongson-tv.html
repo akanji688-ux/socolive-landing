@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>LuongSon TV — Cúp Thế Giới 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow-x:hidden}
+:root{--r:#e8002d;--r2:#ff1a3d;--gold:#f0a500;--gold2:#ffc62b;--bg:#060203}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:#fff}
+
+/* GRAIN */
+#grain{position:fixed;inset:0;z-index:900;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size:200px;animation:gr 8s steps(10) infinite}
+@keyframes gr{0%{transform:translate(0,0)}10%{transform:translate(-2%,-3%)}20%{transform:translate(3%,2%)}30%{transform:translate(-1%,3%)}40%{transform:translate(2%,-1%)}50%{transform:translate(-3%,1%)}60%{transform:translate(1%,-2%)}70%{transform:translate(3%,3%)}80%{transform:translate(-2%,1%)}90%{transform:translate(1%,2%)}100%{transform:translate(0,0)}}
+
+/* BG */
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 100% 55% at 50% -2%,rgba(232,0,45,.22) 0%,transparent 55%),
+    radial-gradient(ellipse 60% 50% at 8% 95%,rgba(240,165,0,.07) 0%,transparent 50%),var(--bg)}
+#bg::before{content:'';position:absolute;inset:0;
+  background-image:repeating-linear-gradient(-52deg,transparent 0,transparent 22px,rgba(232,0,45,.022) 22px,rgba(232,0,45,.022) 23px);
+  animation:drift 20s linear infinite}
+@keyframes drift{from{background-position:0 0}to{background-position(48px 83px)}}
+
+.orb-r{position:fixed;top:-150px;left:50%;transform:translateX(-50%);
+  width:700px;height:500px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(232,0,45,.28) 0%,transparent 60%);
+  filter:blur(70px);pointer-events:none;z-index:1;
+  animation:orbr 7s ease-in-out infinite;will-change:transform}
+@keyframes orbr{0%,100%{opacity:.85;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.09)}}
+
+.orb-g{position:fixed;bottom:-100px;right:-80px;
+  width:450px;height:450px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(240,165,0,.09) 0%,transparent 60%);
+  filter:blur(70px);pointer-events:none;z-index:1;
+  animation:orbg 10s ease-in-out infinite}
+@keyframes orbg{0%,100%{transform:translate(0,0)}50%{transform:translate(-20px,-20px)}}
+
+#canvas{position:fixed;inset:0;z-index:2;pointer-events:none}
+
+.wm{position:fixed;font-family:'Syne',sans-serif;font-weight:800;
+  font-size:clamp(180px,26vw,360px);line-height:1;letter-spacing:-.05em;
+  color:transparent;-webkit-text-stroke:1px rgba(232,0,45,.055);
+  pointer-events:none;z-index:1;user-select:none;
+  top:50%;right:-5%;transform:translateY(-50%);
+  animation:wmb 5s ease-in-out infinite}
+@keyframes wmb{0%,100%{opacity:.65}50%{opacity:1}}
+
+/* NAV */
+nav{position:relative;z-index:50;display:flex;align-items:center;justify-content:space-between;
+  padding:24px 56px;border-bottom:1px solid rgba(240,165,0,.1)}
+.nlogo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.55rem;letter-spacing:.04em;display:flex;align-items:center;gap:12px}
+.nbadge{background:var(--r);font-family:'Inter',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;padding:4px 9px;border-radius:3px;animation:bl 2s ease-in-out infinite}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.5}}
+.nl1{color:var(--gold)}.nl2{color:#fff}
+.nav-r{display:flex;align-items:center;gap:28px}
+.nav-link{font-size:.75rem;font-weight:500;letter-spacing:.06em;color:rgba(255,255,255,.32);text-decoration:none;transition:color .2s;position:relative}
+.nav-link::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:1px;background:var(--gold);transform:scaleX(0);transition:transform .3s cubic-bezier(.16,1,.3,1)}
+.nav-link:hover{color:rgba(255,255,255,.8)}.nav-link:hover::after{transform:scaleX(1)}
+
+/* HERO */
+.hero{position:relative;z-index:10;min-height:calc(100vh - 82px);
+  display:grid;grid-template-columns:1.05fr .95fr;align-items:center;
+  padding:40px 56px 80px;gap:40px}
+
+/* LEFT */
+.hl{}
+.kicker{display:flex;align-items:center;gap:10px;margin-bottom:24px;
+  opacity:0;transform:translateY(12px);transition:opacity .6s,transform .6s cubic-bezier(.16,1,.3,1)}
+.kicker.s{opacity:1;transform:none}
+.kb{width:26px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--gold),var(--r))}
+.kt{font-size:.68rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+
+.lw{overflow:hidden;display:block}
+.li{display:block;transform:translateY(112%);transition:transform 1s cubic-bezier(.16,1,.3,1)}
+.li.s{transform:translateY(0)}
+h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(54px,8.5vw,114px);line-height:.91;letter-spacing:-.025em;margin-bottom:22px}
+.hstroke{-webkit-text-stroke:2px var(--r);color:transparent}
+.hsolid{color:#fff}
+.hgold{color:var(--gold)}
+
+.cd{display:flex;align-items:center;gap:6px;margin:26px 0 38px;
+  opacity:0;transform:translateY(10px);transition:opacity .7s .5s,transform .7s .5s cubic-bezier(.16,1,.3,1)}
+.cd.s{opacity:1;transform:none}
+.cdu{text-align:center}
+.cdn{font-family:'Syne',sans-serif;font-weight:800;font-size:2.2rem;line-height:1;
+  background:linear-gradient(135deg,var(--gold),var(--r));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  display:block;
+  background-color:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  padding:8px 14px;border-radius:6px;
+  transition:transform .15s}
+.cdn.flip{transform:scaleY(0)}
+.cdl{font-size:.58rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.28);margin-top:5px}
+.cd-sep{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;
+  background:linear-gradient(135deg,var(--gold),var(--r));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  align-self:flex-start;margin-top:8px;opacity:.6}
+
+.btns{display:flex;flex-wrap:wrap;gap:12px;
+  opacity:0;transform:translateY(12px);transition:opacity .7s .66s,transform .7s .66s cubic-bezier(.16,1,.3,1)}
+.btns.s{opacity:1;transform:none}
+.btn{display:inline-flex;align-items:center;gap:9px;font-family:'Inter',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;padding:14px 26px;border-radius:4px;position:relative;overflow:hidden;transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
+.btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);transform:translateX(-100%);transition:transform .5s ease}
+.btn:hover::before{transform:translateX(100%)}.btn:hover{transform:translateY(-2px)}
+.b1{background:linear-gradient(135deg,var(--r),var(--r2));color:#fff;box-shadow:0 4px 26px rgba(232,0,45,.45)}
+.b1:hover{box-shadow:0 6px 42px rgba(232,0,45,.65)}
+.b2{background:var(--gold);color:#000;box-shadow:0 4px 20px rgba(240,165,0,.3)}
+.b2:hover{background:var(--gold2);box-shadow:0 6px 32px rgba(240,165,0,.5)}
+.b3{background:transparent;color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.15)}
+.b3:hover{border-color:var(--gold);color:var(--gold)}
+
+/* RIGHT */
+.hr{display:flex;flex-direction:column;gap:10px}
+
+.widget-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.wt{font-size:.65rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.25)}
+.wa{font-size:.65rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(240,165,0,.45);text-decoration:none;transition:color .2s}
+.wa:hover{color:var(--gold)}
+
+/* player in right col */
+.player-box{position:relative;height:200px;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.p-glow{position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:220px;height:180px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(232,0,45,.3) 0%,transparent 65%);
+  filter:blur(30px);animation:pg2 3.5s ease-in-out infinite}
+@keyframes pg2{0%,100%{opacity:.7 ;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.1)}}
+.psv{width:160px;filter:drop-shadow(0 0 16px rgba(232,0,45,.45)) drop-shadow(0 0 6px rgba(240,165,0,.3));animation:pfloat 4s ease-in-out infinite}
+@keyframes pfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+.mc{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:16px 18px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  transition:border-color .25s,background .25s,transform .3s cubic-bezier(.16,1,.3,1);
+  cursor:default;opacity:0;transform:translateX(22px);
+  transition:opacity .6s,transform .6s cubic-bezier(.16,1,.3,1),border-color .2s,background .2s}
+.mc.s{opacity:1;transform:none}
+.mc:hover{border-color:rgba(232,0,45,.3);background:rgba(232,0,45,.04);transform:translateX(-3px)!important}
+.mc.feat{border-color:rgba(240,165,0,.25);background:rgba(240,165,0,.03)}
+.mcl{font-size:.58rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.22);margin-bottom:8px}
+.mct{display:flex;align-items:center;gap:8px}
+.mctf{font-size:1.4rem;line-height:1}
+.mcts{font-family:'Syne',sans-serif;font-weight:800;font-size:.95rem;color:#fff;letter-spacing:.02em}
+.mcvs{font-family:'Syne',sans-serif;font-weight:800;font-size:.8rem;color:rgba(255,255,255,.2);flex-shrink:0}
+.mcr{text-align:right;flex-shrink:0}
+.mcs{display:inline-block;font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;padding:3px 8px;border-radius:3px;margin-bottom:4px}
+.ls{background:var(--r);color:#fff;animation:bl 1.4s infinite}
+.us{background:rgba(240,165,0,.12);color:var(--gold);border:1px solid rgba(240,165,0,.28)}
+.mctm{font-size:.68rem;color:rgba(255,255,255,.25)}
+
+/* BOTTOM */
+.bar{position:relative;z-index:10;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid rgba(255,255,255,.05)}
+.bi{padding:28px 0 28px 36px;border-right:1px solid rgba(255,255,255,.05);
+  opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s cubic-bezier(.16,1,.3,1)}
+.bi.s{opacity:1;transform:none}.bi:last-child{border-right:none}
+.bn{font-family:'Syne',sans-serif;font-weight:800;font-size:2.2rem;line-height:1;
+  background:linear-gradient(135deg,var(--gold),var(--r));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.bl{font-size:.64rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.2);margin-top:5px}
+
+footer{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:18px 56px;border-top:1px solid rgba(240,165,0,.07);font-size:.7rem;color:rgba(255,255,255,.18)}
+footer a{color:rgba(240,165,0,.35);text-decoration:none;transition:color .2s}footer a:hover{color:var(--gold)}
+
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;padding:50px 24px 40px;min-height:auto}
+  nav,footer,.bar{padding-left:24px;padding-right:24px}
+  .bi{padding-left:20px}h1{font-size:clamp(50px,14vw,70px)}
+  .bar{grid-template-columns:repeat(2,1fr)}.bi:nth-child(2){border-right:none}
+  .bi:nth-child(3),.bi:nth-child(4){border-top:1px solid rgba(255,255,255,.05)}
+  .wm{display:none}}
+</style>
+</head>
+<body>
+<div id="grain"></div>
+<div id="bg"></div>
+<div class="orb-r"></div>
+<div class="orb-g"></div>
+<canvas id="canvas"></canvas>
+<div class="wm">LS</div>
+
+<nav>
+  <div class="nlogo">
+    <div class="nbadge">LIVE</div>
+    <span class="nl1">Lương</span><span class="nl2">Sơn TV</span>
+  </div>
+  <div class="nav-r">
+    <a href="#" class="nav-link">Lịch Thi Đấp</a>
+    <a href="#" class="nav-link">Giải Đấp</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hl">
+    <div class="kicker" id="kicker">
+      <div class="kb"></div>
+      <div class="kt">🏆 Cúp Thế Giới 2026 • Khai Mạc Ngày Mai</div>
+    </div>
+
+    <h1>
+      <span class="lw"><span class="li hstroke" data-l="0">CÚP THẾ GIỚI</span></span>
+      <span class="lw"><span class="li hsolid" data-l="1">TRỰC TIẾP</span></span>
+      <span class="lw"><span class="li hgold" data-l="2">2026</span></span>
+    </h1>
+
+    <div class="cd" id="cd">
+      <div class="cdu"><span class="cdn" id="cd-d">00</span><div class="cdl">Ngày</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cdu"><span class="cdn" id="cd-h">00</span><div class="cdl">Giờ</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cdu"><span class="cdn" id="cd-m">00</span><div class="cdl">Phút</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cdu"><span class="cdn" id="cd-s">00</span><div class="cdl">Giây</div></div>
+    </div>
+
+    <div class="btns" id="btns">
+      <a href="#" class="btn b1"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M1 1l10 5-10 5V1z"/></svg>Xem Trực Tiếp</a>
+      <a href="#" class="btn b2">Đăng Ký</a>
+      <a href="#" class="btn b3">Đăng Nhập</a>
+    </div>
+  </div>
+
+  <div class="hr">
+    <div class="widget-hd">
+      <div class="wt">Trận đấu • 11/6/2026</div>
+      <a href="#" class="wa">Xem thêm →</a>
+    </div>
+
+    <!-- player in jersey colors -->
+    <div class="player-box">
+      <div class="p-glow"></div>
+      <svg class="psv" viewBox="0 0 200 360" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="pg3" x1="0%" y1="0%" x2="100%" y2="110%">
+            <stop offset="0%" stop-color="#f0a500"/>
+            <stop offset="45%" stop-color="#e8002d"/>
+            <stop offset="100%" stop-color="#8b0018" stop-opacity=".7"/>
+          </linearGradient>
+          <filter id="gf3"><feGaussianBlur stdDeviation="2"/></filter>
+        </defs>
+        <g fill="url(#pg3)">
+          <ellipse cx="100" cy="44" rx="27" ry="29"/>
+          <rect x="90" y="71" width="14" height="16" rx="4"/>
+          <path d="M74 85 C64 104 62 138 66 158 L134 158 C138 138 136 104 126 85 Q100 76 74 85Z"/>
+          <path d="M66 97 C50 86 28 87 16 98 C12 102 13 108 17 110 C21 112 26 109 30 106 C40 97 60 100 68 110Z"/>
+          <path d="M134 97 C150 86 170 84 182 92 C186 95 186 101 183 104 C180 107 175 106 171 103 C161 96 142 97 132 108Z"/>
+          <path d="M86 156 C80 196 74 236 68 272 C65 282 69 288 76 289 C83 290 89 284 91 274 C97 238 103 198 108 158Z"/>
+          <path d="M122 156 C132 192 144 226 156 256 C160 265 166 268 173 265 C180 262 181 254 177 245 C166 217 154 184 138 153Z"/>
+          <ellipse cx="70" cy="280" rx="22" ry="10" transform="rotate(-18 70 280)"/>
+          <ellipse cx="172" cy="256" rx="24" ry="11" transform="rotate(25 172 256)"/>
+        </g>
+        <text x="100" y="130" fill="rgba(0,0,0,.4)" font-family="Syne,sans-serif" font-weight="800" font-size="24" text-anchor="middle">10</text>
+      </svg>
+    </div>
+
+    <div class="mc feat" data-mc="0">
+      <div>
+        <div class="mcl">Group A • MetLife Stadium</div>
+        <div class="mct">
+          <div class="mctf">🇲🇽</div>
+          <div class="mcts">Mexico</div>
+          <div class="mcvs">VS</div>
+          <div class="mcts">USA</div>
+          <div class="mctf">🇺🇸</div>
+        </div>
+      </div>
+      <div class="mcr">
+        <div class="mcs ls">● LIVE NGÀY MAI</div>
+        <div class="mctm">21:00 — 11/6</div>
+      </div>
+    </div>
+    <div class="mc" data-mc="1">
+      <div>
+        <div class="mcl">Group B • SoFi Stadium, LA</div>
+        <div class="mct">
+          <div class="mctf">🇧🇷</div>
+          <div class="mcts">Brazil</div>
+          <div class="mcvs">VS</div>
+          <div class="mcts">Serbia</div>
+          <div class="mctf">🇷🇸</div>
+        </div>
+      </div>
+      <div class="mcr">
+        <div class="mcs us">Sắp diễn ra</div>
+        <div class="mctm">18:00 — 11/6</div>
+      </div>
+    </div>
+    <div class="mc" data-mc="2">
+      <div>
+        <div class="mcl">Group C • AT&T Stadium, Dallas</div>
+        <div class="mct">
+          <div class="mctf">🇫🇷</div>
+          <div class="mcts">France</div>
+          <div class="mcvs">VS</div>
+          <div class="mcts">Morocco</div>
+          <div class="mctf">🇲🇦</div>
+        </div>
+      </div>
+      <div class="mcr">
+        <div class="mcs us">Sắp diễn ra</div>
+        <div class="mctm">21:00 — 12/6</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="bar">
+  <div class="bi"><div class="bn" data-c="48" data-s=" đội">0</div><div class="bl">Đội tuyển</div></div>
+  <div class="bi"><div class="bn" data-c="104" data-s=" trận">0</div><div class="bl">Trận đấu</div></div>
+  <div class="bi"><div class="bn">24/7</div><div class="bl">Trực tuyến</div></div>
+  <div class="bi"><div class="bn">14�</div><div class="bl">Miễn phí</div></div>
+</div>
+
+<footer>
+  <span>&copy; 2025 LuongSon TV — Cúp Thế Giới 2026</span>
+  <a href="#">luongson.tv</a>
+</footer>
+
+<script>
+(function(){
+/* ENTRANCE */
+setTimeout(()=>document.getElementById('kicker').classList.add('s'),100);
+document.querySelectorAll('.li').forEach(el=>{
+  const d=parseFloat(el.dataset.l||0)*130+200;
+  setTimeout(()=>el.classList.add('s'),d);
+});
+setTimeout(()=>document.getElementById('cd').classList.add('s'),500);
+setTimeout(()=>document.getElementById('btns').classList.add('s'),660);
+document.querySelectorAll('.mc').forEach((el,i)=>setTimeout(()=>el.classList.add('s'),380+i*100));
+
+/* COUNTDOWN */
+const target=new Date('2026-06-11T21:00:00+07:00');
+function pad(n){return String(n).padStart(2,'0')}
+function tick(){
+  const diff=target-new Date();
+  if(diff<=0)return;
+  const d=Math.floor(diff/86400000),h=Math.floor(diff%86400000/3600000),
+        m=Math.floor(diff%3600000/60000),s=Math.floor(diff%60000/1000);
+  function set(id,val){
+    const el=document.getElementById('cd-'+id),nv=pad(val);
+    if(el.textContent!==nv){el.classList.add('flip');setTimeout(()=>{el.textContent=nv;el.classList.remove('flip')},75)}
+  }
+  set('d',d);set('h',h);set('m',m);set('s',s);
+}
+tick();setInterval(tick,1000);
+
+/* SCROLL REVEALS */
+function easeOut(t){return 1-Math.pow(1-t,3)}
+function countUp(el,target,suffix,dur){
+  let start=null;
+  (function step(ts){if(!start)start=ts;const p=Math.min((ts-start)/dur,1);el.textContent=Math.floor(easeOut(p)*target)+(p>=1?suffix:'');if(p<1)requestAnimationFrame(step)})(performance.now());
+}
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    const el=e.target;el.classList.add('s');
+    const ne=el.querySelector('[data-c]');
+    if(ne)countUp(ne,parseInt(ne.dataset.c),ne.dataset.s||'',1800);
+    io.unobserve(el);
+  });
+},{threshold:0.25});
+document.querySelectorAll('.bi').forEach((el,i)=>{el.style.transitionDelay=(i*80)+'ms';io.observe(el)});
+
+/* PARTICLES */
+const canvas=document.getElementById('canvas');
+const ctx=canvas.getContext('2d');
+let W,H;
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
+resize();window.addEventListener('resize',resize);
+function rnd(a,b){return Math.random()*(b-a)+a}
+const particles=Array.from({length:20},()=>({
+  x:rnd(0,1)*window.innerWidth,y:rnd(0,1)*window.innerHeight,
+  r:rnd(3,12),vx:rnd(-.35,.35),vy:rnd(-.55,-.15),
+  o:rnd(.04,.13),pulse:rnd(0,Math.PI*2),
+  type:Math.random()>.5?'ball':'star'
+}));
+function drawBall(cx,cy,r,o){
+  ctx.save();ctx.globalAlpha=o;
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);
+  ctx.strokeStyle='rgba(240,165,0,.9)';ctx.lineWidth=r*.12;ctx.stroke();
+  ctx.beginPath();
+  for(let i=0;i<5;i++){const a=i/5*Math.PI*2-Math.PI/2;const x=cx+r*.45*Math.cos(a),y=cy+r*.45*Math.sin(a);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)}
+  ctx.closePath();ctx.strokeStyle='rgba(232,0,45,.6)';ctx.lineWidth=r*.08;ctx.stroke();
+  ctx.restore();
+}
+function drawStar(cx,cy,r,o){
+  ctx.save();ctx.globalAlpha=o;
+  ctx.beginPath();
+  for(let i=0;i<5;i++){
+    const a=i/5*Math.PI*2-Math.PI/2;
+    ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a));
+    const a2=a+Math.PI/5;
+    ctx.lineTo(cx+r*.4*Math.cos(a2),cy+r*.4*Math.sin(a2));
+  }
+  ctx.closePath();ctx.fillStyle='rgba(240,165,0,.6)';ctx.fill();ctx.restore();
+}
+function animate(){
+  ctx.clearRect(0,0,W,H);
+  particles.forEach(p=>{
+    p.pulse+=0.025;const o=p.o*(0.7+0.3*Math.sin(p.pulse));
+    p.type==='ball'?drawBall(p.x,p.y,p.r,o):drawStar(p.x,p.y,p.r,o);
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.y+p.r<0)p.y=H+p.r;
+    if(p.x<-p.r)p.x=W+p.r;if(p.x>W+p.r)p.x=-p.r;
+  });
+  requestAnimationFrame(animate);
+}
+animate();
+
+/* PARALLAX */
+const orb=document.querySelector('.orb-r');
+document.addEventListener('mousemove',e=>{
+  const x=(e.clientX/window.innerWidth-.5)*2,y=(e.clientY/window.innerHeight-.5)*2;
+  orb.style.transform=`translateX(calc(-50% + ${x*22}px)) translateY(${y*14}px)`;
+});
+})();
+</script>
+</body>
+</html>
